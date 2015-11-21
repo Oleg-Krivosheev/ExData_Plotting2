@@ -11,3 +11,9 @@
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+
+# binary data files
+*.rda
+
+# RDS binary files
+*.rds
