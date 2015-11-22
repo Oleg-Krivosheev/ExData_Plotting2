@@ -12,17 +12,17 @@ object.size(SCC)
 class(NEI)
 class(SCC)
 
-x <- aggregate(NEI$Emissions, by=list(Category=NEI$year), FUN=sum)
+NEI <- subset(NEI, fips == 24510)
 
-class(x)
+x <- aggregate(NEI$Emissions, by=list(Category=NEI$year), FUN=sum)
 
 colnames(x) <- c("Year", "Emissions")
 
-png("plot1.png", width=512, height=512)
+png("plot2.png", width=512, height=512)
 
 plot(x$Year, x$Emissions,
      type="o", col=c("red"),
      xlab="Year", ylab="Emissions",
-     main="Emission of PM(2.5) per year of all sources")
+     main="Emission of PM(2.5) per year of Baltimore City,Maryland")
 
 dev.off()
