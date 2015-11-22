@@ -20,3 +20,6 @@ vignettes/*.pdf
 
 # SQLite files
 *.sqlite
+
+# graphs
+*.png
