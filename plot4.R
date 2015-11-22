@@ -12,17 +12,19 @@ object.size(SCC)
 class(NEI)
 class(SCC)
 
-NEI <- subset(NEI, fips == 24510)
+sel  <- grepl("Coal", SCC$SCC.Level.Three)
+sc   <- SCC[sel,]
+coal <- subset(NEI, NEI$SCC == sc$SCC)
 
-q <- aggregate(NEI$Emissions, by=list(Category=NEI$year), FUN=sum)
+q <- aggregate(coal$Emissions, by=list(year=coal$year), FUN=sum)
 
 colnames(q) <- c("Year", "Emissions")
 
-png("plot2.png", width=512, height=512)
+png("plot4.png", width=512, height=512)
 
 plot(q$Year, q$Emissions,
      type="o", col=c("red"),
      xlab="Year", ylab="Emissions",
-     main="Emission of PM(2.5) per year for City of Baltimore, Maryland")
+     main="Emission of PM(2.5) per year from Coal Combustion")
 
 dev.off()
