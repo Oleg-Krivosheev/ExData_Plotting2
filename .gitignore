@@ -17,3 +17,6 @@ vignettes/*.pdf
 
 # RDS binary files
 *.rds
+
+# SQLite files
+*.sqlite
