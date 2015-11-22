@@ -13,14 +13,14 @@ object.size(SCC)
 class(NEI)
 class(SCC)
 
-NEI <- subset(NEI, fips == 24510)
+NEI <- subset(NEI, fips %in% c(24510))
 
-q <- aggregate(NEI$Emissions, by=list(year=NEI$year, type=NEI$type), FUN=sum)
+q <- as.data.table( aggregate(NEI$Emissions, by=list(year=NEI$year, type=NEI$type), FUN=sum) )
 
-colnames(q) <- c("Year", "Type", "Emissions")
+setnames(q, c("Year", "Type", "Emissions") )
 
 qplot(Year, Emissions, facets=.~Type, data=q,
-      geom=c("line"), color=Type,
+      color=Type, geom=c("line"),
       main="Emission of PM(2.5) per type - Baltimore city, Mariland")
 
 ggsave(filename="plot3.png", width=10)

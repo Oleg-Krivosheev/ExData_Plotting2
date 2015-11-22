@@ -12,11 +12,11 @@ object.size(SCC)
 class(NEI)
 class(SCC)
 
-NEI <- subset(NEI, fips == 24510)
+NEI <- subset(NEI, fips %in% c(24510))
 
-q <- aggregate(NEI$Emissions, by=list(Category=NEI$year), FUN=sum)
+q <- as.data.table( aggregate(NEI$Emissions, by=list(Category=NEI$year), FUN=sum) )
 
-colnames(q) <- c("Year", "Emissions")
+setnames(q, c("Year", "Emissions") )
 
 png("plot2.png", width=512, height=512)
 

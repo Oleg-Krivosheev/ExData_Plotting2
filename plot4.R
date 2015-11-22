@@ -16,9 +16,9 @@ sel  <- grepl("Coal", SCC$SCC.Level.Three)
 sc   <- SCC[sel,]
 coal <- subset(NEI, NEI$SCC == sc$SCC)
 
-q <- aggregate(coal$Emissions, by=list(year=coal$year), FUN=sum)
+q <- as.data.table( aggregate(coal$Emissions, by=list(year=coal$year), FUN=sum) )
 
-colnames(q) <- c("Year", "Emissions")
+setnames(q, c("Year", "Emissions") )
 
 png("plot4.png", width=512, height=512)
 

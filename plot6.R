@@ -13,14 +13,17 @@ object.size(SCC)
 class(NEI)
 class(SCC)
 
-zips   <- subset(NEI, fips == "24510" | fips == "06037")
-onroad <- subset(zips, type=="ON-ROAD")
+zips   <- subset(NEI, fips %in% c("24510","06037"))
+onroad <- subset(zips, type %in% c("ON-ROAD"))
 
-q <- aggregate( onroad$Emissions, by=list(year=onroad$year, fips=onroad$fips), FUN=sum)
+class(zips)
+class(onroad)
 
-q["fips"] <- c(rep("Los Angeles", times=4), rep("Baltimore", times=4))
+q <- as.data.table( aggregate( onroad$Emissions, by=list(year=onroad$year, fips=onroad$fips), FUN=sum) )
 
-colnames(q)<-c("Year", "City", "Emissions")
+q[, fips := c(rep("Los Angeles", times=4), rep("Baltimore", times=4))]
+
+setnames(q, c("Year", "City", "Emissions") )
 
 qplot(Year, Emissions, data=q,
       facets = .~City, color=City, geom=c("line"))

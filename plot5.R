@@ -12,12 +12,12 @@ object.size(SCC)
 class(NEI)
 class(SCC)
 
-city   <- subset(NEI, fips == "24510")
-onroad <- subset(city, type == "ON-ROAD")
+city   <- subset(NEI, fips %in% c(24510))
+onroad <- subset(city, type %in% c("ON-ROAD"))
 
-q <- aggregate( onroad$Emissions, by=list(year=onroad$year), FUN=sum)
+q <- as.data.table( aggregate( onroad$Emissions, by=list(year=onroad$year), FUN=sum) )
 
-colnames(q) <- c("Year", "Emissions")
+setnames(q, c("Year", "Emissions") )
 
 png("plot5.png", width=512, height=512)
 
