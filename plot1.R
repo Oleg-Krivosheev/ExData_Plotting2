@@ -1,26 +1,21 @@
+# Repo: https://github.com/Oleg-Krivosheev/ExData_Plotting2/
 library(data.table)
 
-NEI <- data.table()
-SCC <- data.table()
+# if data are preprocessed, load it faster by uncommenting the line
+# load("NEI.rda")
 
-system.time( load("NEI.rda") )
-system.time( load("SCC.rda") )
+NEI <- as.data.table( readRDS("summarySCC_PM25.rds") )
 
-object.size(NEI)
-object.size(SCC)
-
-class(NEI)
-class(SCC)
-
-q <- as.data.table( aggregate(NEI$Emissions, by=list(Category=NEI$year), FUN=sum) )
+q <- as.data.table( aggregate(NEI$Emissions, by=list(NEI$year), FUN=sum, na.rm=TRUE) )
 
 setnames(q, c("Year", "Emissions") )
 
 png("plot1.png", width=512, height=512)
 
-plot(q$Year, q$Emissions,
-     type="o", col=c("red"),
-     xlab="Year", ylab="Emissions",
-     main="Emission of PM(2.5) per year from all sources")
+plot(q$Year, q$Emissions/1.0e+6,
+     type = "o", pch = 19, col=c("red"),
+     xlab="Year", ylab="PM2.5 Emissions, mln tons",
+     ylim=c(0,8),
+     main="Total PM2.5 emission from all sources, 1999-2008")
 
 dev.off()

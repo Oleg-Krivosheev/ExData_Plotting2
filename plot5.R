@@ -1,29 +1,29 @@
+# Repo: https://github.com/Oleg-Krivosheev/ExData_Plotting2/
 library(data.table)
 
-NEI <- data.table()
-SCC <- data.table()
+# if data are preprocessed, load it faster by uncommenting the line
+#load("NEI.rda")
+#load("SCC.rda")
 
-system.time( load("NEI.rda") )
-system.time( load("SCC.rda") )
+NEI <- as.data.table( readRDS("summarySCC_PM25.rds") )
+SCC <- as.data.table( readRDS("Source_Classification_Code.rds") )
 
-object.size(NEI)
-object.size(SCC)
+vhs     <- grepl("vehicle", SCC$SCC.Level.Two, ignore.case=TRUE)
+vhs.sel <- SCC[vhs,]$SCC
 
-class(NEI)
-class(SCC)
+vhs.src  <- subset(NEI, NEI$SCC %in% vhs.sel)
+city.sel <- subset(vhs.src, fips %in% c("24510"))
 
-city   <- subset(NEI, fips %in% c(24510))
-onroad <- subset(city, type %in% c("ON-ROAD"))
-
-q <- as.data.table( aggregate( onroad$Emissions, by=list(year=onroad$year), FUN=sum) )
+q <- as.data.table( aggregate( city.sel$Emissions, by=list(year=city.sel$year), FUN=sum, na.rm=TRUE) )
 
 setnames(q, c("Year", "Emissions") )
 
 png("plot5.png", width=512, height=512)
 
 plot(q$Year, q$Emissions,
-     type="o", col=c("red"),
-     xlab="Year", ylab="Emissions from on-road vehicles",
-     main="Emission of PM(2.5) per year from vehicles, City of Baltimore")
+     type="o", pch = 19, col=c("red"),
+     xlab="Year", ylab="PM2.5 Emissions from motor vehicles, 100K tons",
+     ylim=c(100, 450),
+     main="PM2.5 Emissions from motor vehicles, Baltimore City, 1999-2008")
 
 dev.off()

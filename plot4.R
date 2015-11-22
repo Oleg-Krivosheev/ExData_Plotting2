@@ -1,30 +1,28 @@
+# Repo: https://github.com/Oleg-Krivosheev/ExData_Plotting2/
 library(data.table)
 
-NEI <- data.table()
-SCC <- data.table()
+# if data are preprocessed, load it faster by uncommenting the line
+#load("NEI.rda")
+#load("SCC.rda")
 
-system.time( load("NEI.rda") )
-system.time( load("SCC.rda") )
+NEI <- as.data.table( readRDS("summarySCC_PM25.rds") )
+SCC <- as.data.table( readRDS("Source_Classification_Code.rds") )
 
-object.size(NEI)
-object.size(SCC)
+# selecting coal combustion related data
+cl   <- grepl("coal", SCC$EI.Sector, ignore.case=TRUE)
+sc   <- SCC[cl,]$SCC
+coal <- subset(NEI, NEI$SCC %in% sc)
 
-class(NEI)
-class(SCC)
-
-sel  <- grepl("Coal", SCC$SCC.Level.Three)
-sc   <- SCC[sel,]
-coal <- subset(NEI, NEI$SCC == sc$SCC)
-
-q <- as.data.table( aggregate(coal$Emissions, by=list(year=coal$year), FUN=sum) )
+q <- as.data.table( aggregate(coal$Emissions, by=list(coal$year), FUN=sum, na.rm=TRUE) )
 
 setnames(q, c("Year", "Emissions") )
 
 png("plot4.png", width=512, height=512)
 
-plot(q$Year, q$Emissions,
-     type="o", col=c("red"),
-     xlab="Year", ylab="Emissions",
-     main="Emission of PM(2.5) per year from Coal Combustion")
+plot(q$Year, q$Emissions/1.0e+3,
+     type="o", pch = 19, col=c("red"),
+     xlab="Year", ylab="PM2.5 Emissions, thou tons",
+     ylim=c(300, 600),
+     main="Total PM2.5 Emissions from Coal Combustion, 1999-2008")
 
 dev.off()
